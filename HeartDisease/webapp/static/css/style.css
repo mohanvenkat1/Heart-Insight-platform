@@ -1,0 +1,1047 @@
+/* ═══════════════════════════════════════════════════════════
+   HeartInsight — Executive Medical Console Design System
+   Exact Theme Match: Executive Medical Overview & Clinical Intelligence
+   ═══════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+    /* Backgrounds */
+    --bg-canvas: #ebf1f6;
+    --bg-card: #ffffff;
+    --bg-card-subtle: #f8fafc;
+    --bg-sidebar: #0b1a30;
+    --bg-sidebar-hover: #162a47;
+    --bg-sidebar-active: #1d3557;
+
+    /* Text Colors */
+    --text-navy: #0e2038;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --text-light: #f8fafc;
+
+    /* Clinical Data Colors (exact match to Executive Overview) */
+    --c-navy-dark: #0f2942;      /* Male Bars */
+    --c-blue-sky: #4a90e2;       /* Female Bars */
+    --c-crimson: #a62626;        /* High Risk Factor Bars */
+    --c-crimson-light: #dc2626;  /* High Risk Indicator */
+    --c-cyan-light: #e6f2fb;     /* KPI Icon Background */
+    --c-cyan-accent: #0284c7;    /* KPI Icon Color */
+    
+    /* Risk Levels */
+    --risk-low: #10b981;
+    --risk-med: #3b82f6;
+    --risk-high: #f59e0b;
+    --risk-vhigh: #b91c1c;
+
+    /* Borders & Shadows */
+    --border-card: #d9e2ec;
+    --border-subtle: #e2e8f0;
+    --border-dark: rgba(255, 255, 255, 0.08);
+    --shadow-card: 0 2px 10px rgba(15, 35, 60, 0.05);
+    --shadow-card-hover: 0 8px 24px rgba(15, 35, 60, 0.08);
+
+    /* Fonts & Radii */
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+    --sidebar-width: 82px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════════════
+   Left Medical Command Sidebar
+   ═══════════════════════════════════════════════ */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--bg-sidebar);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.25rem 0.5rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+    text-decoration: none;
+}
+
+.sidebar-logo {
+    width: 44px;
+    height: 44px;
+    background: #1e3a5f;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+
+.sidebar-logo svg, .sidebar-logo span {
+    font-size: 1.35rem;
+}
+
+.sidebar-section-title {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #64748b;
+    margin: 1rem 0 0.5rem;
+    text-align: center;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    width: 100%;
+    align-items: center;
+}
+
+.nav-item {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.nav-item:hover {
+    background: var(--bg-sidebar-hover);
+    color: #f8fafc;
+}
+
+.nav-item.active {
+    background: #1e3a5f;
+    color: #60a5fa;
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    box-shadow: 0 2px 10px rgba(96, 165, 250, 0.25);
+}
+
+.nav-item .icon {
+    font-size: 1.25rem;
+}
+
+.nav-item .tooltip {
+    position: absolute;
+    left: 60px;
+    background: #0f172a;
+    color: #f8fafc;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 200;
+}
+
+.nav-item:hover .tooltip {
+    opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════
+   Main Workspace Frame
+   ═══════════════════════════════════════════════ */
+.workspace {
+    margin-left: var(--sidebar-width);
+    flex: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 2rem 2.5rem;
+}
+
+/* ═══════════════════════════════════════════════
+   Executive Top Header
+   ═══════════════════════════════════════════════ */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #dce4ed;
+}
+
+.header-titles h1 {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--text-navy);
+    line-height: 1.1;
+    text-transform: uppercase;
+}
+
+.header-titles .subtitle {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-top: 0.2rem;
+}
+
+.header-user {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.user-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: #ffffff;
+    border: 1px solid var(--border-card);
+    padding: 0.45rem 0.9rem;
+    border-radius: 9999px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.user-badge .welcome-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.user-badge .user-name {
+    font-weight: 700;
+    color: var(--text-navy);
+}
+
+.clinical-icon-badge {
+    width: 32px;
+    height: 32px;
+    background: #e0f2fe;
+    color: #0284c7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+}
+
+/* ═══════════════════════════════════════════════
+   Executive Grid (Left Clinical Column + Right Dashboard)
+   ═══════════════════════════════════════════════ */
+.executive-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 1200px) {
+    .executive-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ═══════════════════════════════════════════════
+   Left Focus Column: Coronary Heart Disease
+   ═══════════════════════════════════════════════ */
+.clinical-focus-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+}
+
+.clinical-focus-card h2 {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-navy);
+    margin-bottom: 0.85rem;
+}
+
+.clinical-focus-card p {
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: #475569;
+    margin-bottom: 0.85rem;
+}
+
+.scan-image-box {
+    margin: 1rem 0;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid #cbd5e1;
+    background: #000000;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+}
+
+.scan-image-box img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+.author-pill {
+    margin-top: 1.25rem;
+    padding: 0.65rem 0.85rem;
+    background: #f1f5f9;
+    border-left: 3px solid var(--c-navy-dark);
+    border-radius: 4px;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+}
+
+.author-pill strong {
+    color: var(--text-navy);
+    display: block;
+    font-size: 0.78rem;
+}
+
+/* ═══════════════════════════════════════════════
+   Right Main Section: KPIs & Visualizations
+   ═══════════════════════════════════════════════ */
+.right-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* Top 5 KPI Cards Row */
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+}
+
+@media (max-width: 1400px) {
+    .kpi-row {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+@media (max-width: 900px) {
+    .kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.executive-kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.15rem;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.kpi-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: #e8f3fc;
+    color: #1e40af;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.kpi-content .kpi-title {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-navy);
+}
+
+.kpi-content .kpi-number {
+    font-family: var(--font-heading);
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--text-navy);
+    line-height: 1.15;
+    margin: 0.15rem 0;
+}
+
+.kpi-content .kpi-subtext {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+}
+
+/* Row 2: 3 Analytics Cards */
+.middle-row {
+    display: grid;
+    grid-template-columns: 1.2fr 0.9fr 1fr;
+    gap: 1.25rem;
+}
+
+@media (max-width: 1100px) {
+    .middle-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-card);
+}
+
+.chart-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.85rem;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 0.45rem;
+}
+
+.chart-title {
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-navy);
+}
+
+.chart-legend {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+}
+
+.legend-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.25rem;
+}
+
+/* Population Pyramid (Age Bands) */
+.pyramid-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.pyramid-row {
+    display: grid;
+    grid-template-columns: 1fr 48px 1fr;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+}
+
+.pyramid-left {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.pyramid-bar-female {
+    height: 14px;
+    background: var(--c-blue-sky);
+    border-radius: 3px 0 0 3px;
+    transition: width 0.3s ease;
+}
+
+.pyramid-label {
+    text-align: center;
+    font-weight: 700;
+    color: var(--text-secondary);
+    font-size: 0.72rem;
+}
+
+.pyramid-right {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.pyramid-bar-male {
+    height: 14px;
+    background: var(--c-navy-dark);
+    border-radius: 0 3px 3px 0;
+    transition: width 0.3s ease;
+}
+
+/* Gender Donut Display */
+.donut-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 0.75rem 0;
+}
+
+.donut-legend-callouts {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 0.5rem;
+    font-size: 0.78rem;
+}
+
+.donut-stat {
+    text-align: center;
+}
+
+.donut-stat .stat-num {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-navy);
+}
+
+/* Key Factors Vertical Bars */
+.factors-chart {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.85rem;
+    height: 180px;
+    align-items: flex-end;
+    padding-top: 1rem;
+}
+
+.factor-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.factor-bars-duo {
+    display: flex;
+    gap: 0.35rem;
+    align-items: flex-end;
+    height: 130px;
+    width: 100%;
+    justify-content: center;
+}
+
+.factor-bar {
+    width: 22px;
+    border-radius: 3px 3px 0 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #ffffff;
+    padding-top: 2px;
+    transition: height 0.4s ease;
+}
+
+.bar-yes {
+    background: var(--c-crimson);
+}
+
+.bar-no {
+    background: #94a3b8;
+}
+
+.factor-name {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-top: 0.4rem;
+    font-weight: 600;
+}
+
+/* Row 3: Bottom 2 Broad Charts */
+.bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+@media (max-width: 1000px) {
+    .bottom-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Grouped Horizontal Bars (Risk Category by Gender) */
+.cat-gender-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.cat-row {
+    display: grid;
+    grid-template-columns: 75px 1fr;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.74rem;
+}
+
+.cat-label {
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.cat-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.bar-h-male {
+    height: 10px;
+    background: var(--c-navy-dark);
+    border-radius: 2px;
+}
+
+.bar-h-female {
+    height: 10px;
+    background: var(--c-blue-sky);
+    border-radius: 2px;
+}
+
+/* Segmented Distribution Bars */
+.dist-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.dist-row {
+    display: grid;
+    grid-template-columns: 75px 1fr 45px;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.74rem;
+}
+
+.dist-bar-track {
+    background: #e2e8f0;
+    height: 14px;
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+}
+
+.dist-bar-fill {
+    height: 100%;
+    background: var(--c-crimson);
+    border-radius: 3px 0 0 3px;
+}
+
+/* ═══════════════════════════════════════════════
+   Bottom Status Bar / Footer
+   ═══════════════════════════════════════════════ */
+.workspace-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #dce4ed;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+.workspace-footer a {
+    color: var(--text-navy);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.workspace-footer a:hover {
+    color: var(--c-blue-sky);
+}
+
+/* ═══════════════════════════════════════════════
+   Common Page Cards & Tables for Sub-Views
+   ═══════════════════════════════════════════════ */
+.subview-card {
+    background: #ffffff;
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    box-shadow: var(--shadow-card);
+    margin-bottom: 1.5rem;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    text-align: left;
+}
+
+.data-table th {
+    background: #f8fafc;
+    color: var(--text-navy);
+    font-weight: 700;
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.data-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: var(--text-primary);
+}
+
+.data-table tr:hover {
+    background: #f8fafc;
+}
+
+/* ═══════════════════════════════════════════════
+   UI Component Utilities
+   ═══════════════════════════════════════════════ */
+.container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.card {
+    background: #ffffff;
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+}
+
+.section {
+    margin-bottom: 2rem;
+}
+
+.section-header {
+    margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text-navy);
+}
+
+.section-header p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: var(--c-navy-dark);
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background: #1a3a5f;
+    box-shadow: 0 4px 12px rgba(15, 41, 66, 0.2);
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: var(--text-navy);
+}
+
+.btn-secondary:hover {
+    background: #cbd5e1;
+}
+
+.tableau-container {
+    background: #ffffff;
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+    min-height: 450px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tableau-placeholder {
+    text-align: center;
+    max-width: 550px;
+    padding: 3rem 1.5rem;
+}
+
+.tableau-placeholder .icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.tableau-placeholder h3 {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    color: var(--text-navy);
+    margin-bottom: 0.5rem;
+}
+
+.tableau-placeholder p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+}
+
+.tableau-placeholder code {
+    display: inline-block;
+    background: #f1f5f9;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--c-navy-dark);
+    border: 1px solid #e2e8f0;
+}
+
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+}
+
+.kpi-card {
+    background: #ffffff;
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.kpi-icon {
+    font-size: 1.8rem;
+}
+
+.kpi-value {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-navy);
+}
+
+.kpi-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.fade-in {
+    animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════
+   Data Explorer & Interactive Table Controls
+   ═══════════════════════════════════════════════ */
+.data-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    padding: 0.85rem 1.25rem;
+    margin-bottom: 1.25rem;
+    box-shadow: var(--shadow-card);
+    flex-wrap: wrap;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0.5rem 0.85rem;
+    flex: 1;
+    min-width: 260px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-box:focus-within {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    width: 100%;
+    font-family: inherit;
+}
+
+.filter-select {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.85rem;
+    color: var(--text-navy);
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.filter-select:hover, .filter-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.data-table-wrapper {
+    background: #ffffff;
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    overflow-x: auto;
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.badge-male {
+    background: #e0f2fe;
+    color: #0284c7;
+    border: 1px solid rgba(2, 132, 199, 0.2);
+}
+
+.badge-female {
+    background: #fce7f3;
+    color: #db2777;
+    border: 1px solid rgba(219, 39, 119, 0.2);
+}
+
+.badge-disease {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
+.badge-no-disease {
+    background: #dcfce7;
+    color: #16a34a;
+    border: 1px solid rgba(22, 163, 74, 0.25);
+}
+
+/* Cohort Selector Banner */
+.cohort-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1.25rem;
+    box-shadow: var(--shadow-card);
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.cohort-banner-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-navy);
+}
+
+.cohort-select {
+    background: #f8fafc;
+    border: 1.5px solid #0f2942;
+    border-radius: 8px;
+    padding: 0.45rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-navy);
+    cursor: pointer;
+    outline: none;
+}
+

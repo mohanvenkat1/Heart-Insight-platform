@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+{% block title %}Analysis — Heart Disease Analysis{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <section class="section">
+        <div class="section-header">
+            <h2>🔬 Key Analysis & Findings</h2>
+            <p>Data-driven insights from the heart disease dataset</p>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid fade-in">
+            <!-- Chart 1: Gender Distribution -->
+            <div class="chart-card">
+                <h3>Heart Disease by Gender</h3>
+                <canvas id="genderChart"></canvas>
+            </div>
+
+            <!-- Chart 2: Age Group Distribution -->
+            <div class="chart-card">
+                <h3>Disease Prevalence by Age Group</h3>
+                <canvas id="ageChart"></canvas>
+            </div>
+
+            <!-- Chart 3: Chest Pain Types -->
+            <div class="chart-card">
+                <h3>Chest Pain Type Distribution</h3>
+                <canvas id="cpChart"></canvas>
+            </div>
+
+            <!-- Chart 4: Risk Level -->
+            <div class="chart-card">
+                <h3>Patient Risk Level Distribution</h3>
+                <canvas id="riskChart"></canvas>
+            </div>
+
+            <!-- Chart 5: Cholesterol Categories -->
+            <div class="chart-card">
+                <h3>Cholesterol Categories vs Disease</h3>
+                <canvas id="cholChart"></canvas>
+            </div>
+
+            <!-- Chart 6: Blood Pressure -->
+            <div class="chart-card">
+                <h3>Blood Pressure Categories</h3>
+                <canvas id="bpChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Key Insights -->
+        <div class="section-header fade-in" style="margin-top: 4rem;">
+            <h2>💡 Key Insights</h2>
+            <p>Actionable findings from our analysis</p>
+        </div>
+        <div class="insights-grid fade-in">
+            <div class="insight-card">
+                <h4>🚨 Gender Disparity</h4>
+                <p>Males show a significantly higher prevalence of heart disease compared to females in the dataset, particularly in the 50-59 age group.</p>
+            </div>
+            <div class="insight-card">
+                <h4>⚠️ Asymptomatic Risk</h4>
+                <p>Patients with asymptomatic chest pain type have the highest correlation with heart disease, emphasizing the importance of routine screening.</p>
+            </div>
+            <div class="insight-card">
+                <h4>✅ Exercise Matters</h4>
+                <p>Patients without exercise-induced angina and higher maximum heart rates show lower disease prevalence, highlighting the protective role of cardiovascular fitness.</p>
+            </div>
+            <div class="insight-card">
+                <h4>📊 Cholesterol Threshold</h4>
+                <p>Cholesterol levels above 240 mg/dl correlate with significantly increased heart disease risk. Maintaining levels below 200 mg/dl is recommended.</p>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Chart.js configuration
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.06)';
+    Chart.defaults.font.family = 'Inter, sans-serif';
+
+    const chartColors = {
+        red: '#ef4444',
+        pink: '#ec4899',
+        purple: '#8b5cf6',
+        blue: '#3b82f6',
+        cyan: '#06b6d4',
+        green: '#10b981',
+        amber: '#f59e0b',
+        redAlpha: 'rgba(239, 68, 68, 0.7)',
+        greenAlpha: 'rgba(16, 185, 129, 0.7)',
+        blueAlpha: 'rgba(59, 130, 246, 0.7)',
+        pinkAlpha: 'rgba(236, 72, 153, 0.7)',
+        purpleAlpha: 'rgba(139, 92, 246, 0.7)',
+        amberAlpha: 'rgba(245, 158, 11, 0.7)',
+        cyanAlpha: 'rgba(6, 182, 212, 0.7)',
+    };
+
+    const chartData = {{ chart_data | tojson }};
+
+    // ── Chart 1: Gender ──
+    new Chart(document.getElementById('genderChart'), {
+        type: 'bar',
+        data: {
+            labels: chartData.gender.labels,
+            datasets: [
+                {
+                    label: 'Heart Disease',
+                    data: chartData.gender.disease,
+                    backgroundColor: chartColors.redAlpha,
+                    borderRadius: 6,
+                },
+                {
+                    label: 'No Disease',
+                    data: chartData.gender.no_disease,
+                    backgroundColor: chartColors.greenAlpha,
+                    borderRadius: 6,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'top' } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // ── Chart 2: Age Group ──
+    new Chart(document.getElementById('ageChart'), {
+        type: 'bar',
+        data: {
+            labels: chartData.age_group.labels,
+            datasets: [
+                {
+                    label: 'Heart Disease',
+                    data: chartData.age_group.disease,
+                    backgroundColor: chartColors.purpleAlpha,
+                    borderRadius: 6,
+                },
+                {
+                    label: 'No Disease',
+                    data: chartData.age_group.no_disease,
+                    backgroundColor: chartColors.cyanAlpha,
+                    borderRadius: 6,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'top' } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // ── Chart 3: Chest Pain ──
+    new Chart(document.getElementById('cpChart'), {
+        type: 'doughnut',
+        data: {
+            labels: chartData.cp.labels,
+            datasets: [{
+                data: chartData.cp.counts,
+                backgroundColor: [chartColors.redAlpha, chartColors.blueAlpha, chartColors.purpleAlpha, chartColors.amberAlpha],
+                borderWidth: 0,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom' } },
+            cutout: '55%',
+        }
+    });
+
+    // ── Chart 4: Risk Level ──
+    new Chart(document.getElementById('riskChart'), {
+        type: 'doughnut',
+        data: {
+            labels: chartData.risk.labels,
+            datasets: [{
+                data: chartData.risk.counts,
+                backgroundColor: [chartColors.greenAlpha, chartColors.amberAlpha, chartColors.redAlpha, 'rgba(220, 38, 38, 0.9)'],
+                borderWidth: 0,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom' } },
+            cutout: '55%',
+        }
+    });
+
+    // ── Chart 5: Cholesterol ──
+    new Chart(document.getElementById('cholChart'), {
+        type: 'bar',
+        data: {
+            labels: chartData.chol.labels,
+            datasets: [
+                {
+                    label: 'Heart Disease',
+                    data: chartData.chol.disease,
+                    backgroundColor: chartColors.redAlpha,
+                    borderRadius: 6,
+                },
+                {
+                    label: 'No Disease',
+                    data: chartData.chol.no_disease,
+                    backgroundColor: chartColors.greenAlpha,
+                    borderRadius: 6,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'top' } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // ── Chart 6: Blood Pressure ──
+    new Chart(document.getElementById('bpChart'), {
+        type: 'bar',
+        data: {
+            labels: chartData.bp.labels,
+            datasets: [
+                {
+                    label: 'Heart Disease',
+                    data: chartData.bp.disease,
+                    backgroundColor: chartColors.pinkAlpha,
+                    borderRadius: 6,
+                },
+                {
+                    label: 'No Disease',
+                    data: chartData.bp.no_disease,
+                    backgroundColor: chartColors.blueAlpha,
+                    borderRadius: 6,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'top' } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+</script>
+{% endblock %}

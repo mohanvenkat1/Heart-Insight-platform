@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Data Lake — Heart Disease Intelligence{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 1rem; padding-bottom: 3rem;">
+    <!-- Header -->
+    <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1 style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; color: var(--text-navy); text-transform: uppercase;">
+                Patient Data Lake Explorer
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem;">
+                Browse, search, and audit patient records across all 8 multi-center clinical and benchmark cohorts (13,000+ total records).
+            </p>
+        </div>
+
+        <div style="font-size: 0.8rem; background: #e0f2fe; color: #0284c7; padding: 0.35rem 0.85rem; border-radius: 9999px; font-weight: 700;">
+            Showing {{ data|length }} of {{ total_count }} records
+        </div>
+    </div>
+
+    <!-- Cohort Switcher & Interactive Controls -->
+    <div class="data-controls fade-in">
+        <!-- Dataset Selector -->
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <label for="datasetPicker" style="font-weight: 700; font-size: 0.85rem; color: var(--text-navy); white-space: nowrap;">
+                🏥 Cohort:
+            </label>
+            <select class="filter-select" id="datasetPicker" onchange="window.location.href='/data?cohort=' + this.value">
+                {% for key, info in cohorts.items() %}
+                <option value="{{ key }}" {% if key == selected_cohort %}selected{% endif %}>{{ info.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Search Input -->
+        <div class="search-box">
+            <span style="font-size: 0.95rem;">🔍</span>
+            <input type="text" id="tableSearch" placeholder="Search across attributes (age, diagnosis, pressure, etc.)..." autocomplete="off">
+        </div>
+
+        <!-- Quick Reset Button -->
+        <button class="btn btn-secondary" onclick="resetSearch()" style="font-size: 0.8rem; padding: 0.5rem 0.85rem;">
+            Reset Filter
+        </button>
+
+        <span id="resultCount" style="color: var(--text-secondary); font-size: 0.8rem; font-weight: 600; margin-left: auto;">
+            {{ data|length }} rows displayed
+        </span>
+    </div>
+
+    <!-- Dynamic Multi-Cohort Data Table -->
+    <div class="data-table-wrapper fade-in">
+        <table class="data-table" id="patientTable">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">#</th>
+                    {% for col in columns_list %}
+                    <th>{{ col|replace('_', ' ')|title }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                <tr>
+                    <td style="color: var(--text-muted); font-weight: 600;">{{ loop.index }}</td>
+                    {% for col in columns_list %}
+                    <td>
+                        {% if col in ['sex_label', 'Gender'] %}
+                            <span class="badge {% if row[col]|string in ['Male', '1', 'M'] %}badge-male{% else %}badge-female{% endif %}">
+                                {{ row[col] }}
+                            </span>
+                        {% elif col in ['diagnosis', 'HeartDisease', 'DEATH_EVENT'] %}
+                            <span class="badge {% if row[col]|string in ['Heart Disease', '1', 'Yes'] %}badge-disease{% else %}badge-no-disease{% endif %}">
+                                {{ row[col] }}
+                            </span>
+                        {% elif col == 'risk_level' %}
+                            <span style="font-weight: 700; font-size: 0.78rem; 
+                                color: {% if row[col] == 'Very High Risk' %}#dc2626
+                                       {% elif row[col] == 'High Risk' %}#ea580c
+                                       {% elif row[col] == 'Moderate Risk' %}#d97706
+                                       {% else %}#16a34a{% endif %};">
+                                {{ row[col] }}
+                            </span>
+                        {% else %}
+                            {{ row[col] if row[col] is not none else '-' }}
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Benchmark Quick Metrics Footer -->
+    <div class="kpi-grid fade-in" style="margin-top: 1.5rem;">
+        <div class="kpi-card">
+            <div class="kpi-icon">📊</div>
+            <div>
+                <div class="kpi-value">{{ total_count }}</div>
+                <div class="kpi-label">Cohort Patients</div>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon">📋</div>
+            <div>
+                <div class="kpi-value">{{ columns }}</div>
+                <div class="kpi-label">Features / Schema</div>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon">📚</div>
+            <div>
+                <div class="kpi-value">8 Cohorts</div>
+                <div class="kpi-label">13,000+ Total Lake</div>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon">⚡</div>
+            <div>
+                <div class="kpi-value">DuckDB</div>
+                <div class="kpi-label">Vector Storage</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('tableSearch');
+    const table = document.getElementById('patientTable');
+    const rows = table.querySelectorAll('tbody tr');
+    const countDisplay = document.getElementById('resultCount');
+
+    searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+        let visible = 0;
+
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            if (text.includes(query)) {
+                row.style.display = '';
+                visible++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        countDisplay.innerText = visible + ' rows matched';
+    });
+});
+
+function resetSearch() {
+    const input = document.getElementById('tableSearch');
+    input.value = '';
+    const rows = document.querySelectorAll('#patientTable tbody tr');
+    rows.forEach(row => row.style.display = '');
+    document.getElementById('resultCount').innerText = rows.length + ' rows displayed';
+}
+</script>
+{% endblock %}

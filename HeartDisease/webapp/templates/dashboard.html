@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Interactive Dashboard — Tableau Public & Clinical Intelligence{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 1rem; padding-bottom: 3rem;">
+    <!-- Header -->
+    <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1 style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; color: var(--text-navy); text-transform: uppercase;">
+                Interactive Tableau Dashboard
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem;">
+                Embedded interactive analytics powered by Tableau Public JavaScript Embedding API v3.
+            </p>
+        </div>
+    </div>
+
+    <!-- Live URL Control Bar -->
+    <div class="data-controls fade-in">
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 300px;">
+            <label for="urlInput" style="font-weight: 700; font-size: 0.85rem; color: var(--text-navy); white-space: nowrap;">
+                🌐 Tableau URL:
+            </label>
+            <input type="url" id="urlInput" value="{{ tableau_dashboard_url }}" placeholder="https://public.tableau.com/views/YourWorkbook/YourDashboard" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.5rem 0.85rem; font-size: 0.85rem; outline: none;">
+        </div>
+
+        <button class="btn btn-primary" onclick="loadTableauUrl()">
+            Load Workbook
+        </button>
+
+        <button class="btn btn-secondary" onclick="loadDefaultUrl()">
+            Use Cardiology Sample
+        </button>
+    </div>
+
+    <!-- Tableau Embed Container -->
+    <div class="tableau-container fade-in" id="dashboardContainer" style="padding: 0; overflow: hidden; min-height: 820px; position: relative;">
+        <tableau-viz id="tableauDashboard"
+            src="{{ tableau_dashboard_url }}"
+            width="100%"
+            height="820px"
+            hide-tabs
+            toolbar="bottom">
+        </tableau-viz>
+    </div>
+
+    <!-- Step-by-Step Guide: How to Get Your Tableau Public Link -->
+    <div class="card fade-in" style="margin-top: 2rem;">
+        <h3 style="font-family: var(--font-heading); font-size: 1.15rem; color: var(--text-navy); margin-bottom: 0.75rem;">
+            📖 How to Publish & Get Your Tableau Public Link (Step-by-Step)
+        </h3>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; font-size: 0.83rem; line-height: 1.5; color: var(--text-secondary);">
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem;">
+                <div style="font-weight: 800; color: var(--text-navy); margin-bottom: 0.25rem;">Step 1: Open in Tableau</div>
+                Open your workbook in Tableau Desktop or Tableau Public and connect to <code>data/cleaned/heart_cleaned.csv</code>.
+            </div>
+
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem;">
+                <div style="font-weight: 800; color: var(--text-navy); margin-bottom: 0.25rem;">Step 2: Save to Tableau Public</div>
+                In the top menu, click <strong>Server</strong> → <strong>Tableau Public</strong> → <strong>Save to Tableau Public As...</strong> and sign in.
+            </div>
+
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem;">
+                <div style="font-weight: 800; color: var(--text-navy); margin-bottom: 0.25rem;">Step 3: Click the Share Icon</div>
+                When the workbook opens in your browser on Tableau Public, click the <strong>Share</strong> button (3 connected dots) at the bottom right.
+            </div>
+
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem;">
+                <div style="font-weight: 800; color: var(--text-navy); margin-bottom: 0.25rem;">Step 4: Copy the Link</div>
+                Copy the text in the <strong>Link</strong> box (e.g., <code>https://public.tableau.com/views/...</code>) and paste it into the URL bar above!
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function loadTableauUrl() {
+    const url = document.getElementById('urlInput').value.trim();
+    if (url) {
+        window.location.href = '/dashboard?url=' + encodeURIComponent(url);
+    }
+}
+
+function loadDefaultUrl() {
+    document.getElementById('urlInput').value = '{{ default_url }}';
+    loadTableauUrl();
+}
+</script>
+{% endblock %}

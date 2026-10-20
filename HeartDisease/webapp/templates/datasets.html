@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Cardiovascular Datasets & Benchmarks — HeartInsight{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <!-- Header -->
+    <div style="margin-bottom: 2rem;">
+        <span class="badge" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); border: 1px solid rgba(59, 130, 246, 0.3); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">Reference Library</span>
+        <h1 style="font-size: 2.25rem; font-family: var(--font-heading); margin-top: 0.5rem; background: var(--gradient-hero); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Cardiovascular Benchmark Datasets</h1>
+        <p style="color: var(--text-secondary); max-width: 700px; margin-top: 0.25rem;">
+            A curated collection of multi-center clinical cohorts, survival analysis records, and population-level risk studies utilized for cross-validation and analytical benchmarking.
+        </p>
+    </div>
+
+    <!-- Benchmark Cards Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+        {% for ds in datasets %}
+        <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.75rem; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+                    <span style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: {{ ds.badge_color }}; background: {{ ds.badge_bg }}; padding: 0.2rem 0.6rem; border-radius: 4px;">
+                        {{ ds.category }}
+                    </span>
+                    <span style="font-size: 0.85rem; font-family: monospace; color: var(--text-muted);">{{ ds.size_kb }} KB</span>
+                </div>
+                <h3 style="font-size: 1.25rem; font-family: var(--font-heading); color: var(--text-primary); margin-bottom: 0.5rem;">{{ ds.title }}</h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem;">{{ ds.description }}</p>
+                
+                <div style="background: var(--bg-glass); border-radius: var(--radius-sm); padding: 0.75rem; font-size: 0.8rem; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <span style="color: var(--text-muted);">Records / Cohort:</span>
+                        <span style="font-weight: 600; color: var(--text-primary);">{{ ds.records }} patients</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <span style="color: var(--text-muted);">Attributes / Features:</span>
+                        <span style="font-weight: 600; color: var(--text-primary);">{{ ds.features }} columns</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">Target Variable:</span>
+                        <span style="font-weight: 600; color: var(--accent-pink);">{{ ds.target }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.75rem; color: var(--text-muted); font-family: monospace;">{{ ds.filename }}</span>
+                <span style="font-size: 0.8rem; color: var(--accent-cyan); font-weight: 600;">{{ ds.cohort_type }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Documentation & Notebooks Section -->
+    <div class="card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 3rem;">
+        <h2 style="font-size: 1.35rem; font-family: var(--font-heading); color: var(--text-primary); margin-bottom: 1rem;">Clinical Documentation & Research Notebooks</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem;">
+            <div style="background: var(--bg-glass); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem;">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📄</div>
+                <h4 style="font-size: 1.05rem; font-family: var(--font-heading); color: var(--text-primary);">Project Technical Documentation</h4>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.35rem;">
+                    Full architectural and clinical definitions covering cardiovascular predictors, angiography standards, and literature background.
+                </p>
+                <div style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-muted); font-family: monospace;">Location: docs/documentation.pdf</div>
+            </div>
+
+            <div style="background: var(--bg-glass); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem;">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📓</div>
+                <h4 style="font-size: 1.05rem; font-family: var(--font-heading); color: var(--text-primary);">Heart Disease EDA Jupyter Notebook</h4>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.35rem;">
+                    Comprehensive exploratory data analysis, statistical tests, correlation matrices, and predictive modeling prototypes.
+                </p>
+                <div style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-muted); font-family: monospace;">Location: docs/Heart Disease Prediction - Jupyter Notebook.pdf</div>
+            </div>
+
+            <div style="background: var(--bg-glass); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem;">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📑</div>
+                <h4 style="font-size: 1.05rem; font-family: var(--font-heading); color: var(--text-primary);">Clinical Literature Survey</h4>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.35rem;">
+                    Published peer-reviewed evidence (Detrano et al., Chicco & Jurman, Framingham Risk Study) synthesizing predictive power across features.
+                </p>
+                <div style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-muted); font-family: monospace;">Location: docs/literature_survey.md</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+
+{% block title %}Cardiovascular Risk Calculator — HeartInsight{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <!-- Header -->
+    <div style="margin-bottom: 2rem;">
+        <span class="badge"
+            style="background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">Clinical
+            Analytics Tool</span>
+        <h1
+            style="font-size: 2.25rem; font-family: var(--font-heading); margin-top: 0.5rem; background: var(--gradient-hero); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            Interactive Cardiovascular Risk Factor Tool</h1>
+        <p style="color: var(--text-secondary); max-width: 650px; margin-top: 0.25rem;">
+            Explore multivariate physiological interactions and evaluate heuristic risk scores derived from the
+            Cleveland Clinic predictive attributes.
+        </p>
+    </div>
+
+    <!-- Prominent Disclaimer -->
+    <div
+        style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 2rem; display: flex; gap: 0.75rem; align-items: flex-start;">
+        <span style="font-size: 1.25rem;">⚠️</span>
+        <div style="font-size: 0.85rem; color: #fcd34d; line-height: 1.4;">
+            <strong>Educational & Analytical Demonstration:</strong> This interactive risk scoring tool is an
+            algorithmic heuristic built for clinical data engineering exploration. It is <strong>NOT</strong> a
+            certified medical diagnostic device and should never replace qualified clinical evaluation, physician
+            judgment, or emergency cardiac care.
+        </div>
+    </div>
+
+    <!-- Calculator Grid -->
+    <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; align-items: start;">
+        <!-- Input Form -->
+        <div class="card"
+            style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.75rem;">
+            <h2
+                style="font-size: 1.25rem; font-family: var(--font-heading); color: var(--text-primary); margin-bottom: 1.25rem;">
+                Patient Parameters</h2>
+
+            <form id="riskForm" onsubmit="event.preventDefault(); calculateRisk();">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <!-- Age -->
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">Age
+                            (Years)</label>
+                        <input type="number" id="age" value="55" min="20" max="100"
+                            style="width: 100%; background: var(--bg-glass); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.6rem; color: var(--text-primary);">
+                    </div>
+
+                    <!-- Sex -->
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">Sex</label>
+                        <select id="sex"
+                            style="width: 100%; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.6rem; color: var(--text-primary);">
+                            <option value="1">Male</option>
+                            <option value="0">Female</option>
+                        </select>
+                    </div>
+
+                    <!-- Chest Pain -->
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">Chest
+                            Pain Type (cp)</label>
+                        <select id="cp"
+                            style="width: 100%; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.6rem; color: var(--text-primary);">
+                            <option value="0">Typical Angina</option>
+                            <option value="1">Atypical Angina</option>
+                            <option value="2" selected>Non-anginal Pain</option>
+                            <option value="3">Asymptomatic</option>
+                        </select>
+                    </div>
+
+                    <!-- Resting BP -->
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">Resting
+                            Blood Pressure (mm Hg)</label>
+                        <input type="number" id="trestbps" value="130" min="80" max="220"
+                            style="width: 100%; background: var(--bg-glass); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.6rem; color: var(--text-primary);">
+                    </div>
+
+                    <!-- Cholesterol -->
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">Serum
+                            Cholesterol (mg/dL)</label>
+                        <input type="number" id="chol" value="245" min="100" max="550"
+                            style="width: 100%; background: var(--bg-glass); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.6rem; color: var(--text-primary);">
+                    </div>
+
+                    <!-- Fasting Blood Sugar -->
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">Fasting
+                            Blood Sugar > 120 mg/dL</label>
+                        <select id="fbs"
+                            style="width: 100%; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.6rem; color: var(--text-primary);">
+                            <option value="0" selected>No (<= 120)</option>
+                            <option value="1">Yes (> 120)</option>
+                        </select>
+                    </div>
+
+                    <!-- Max Heart Rate -->
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">Max
+                            Heart Rate Achieved (thalach)</label>
+                        <input type="number" id="thalach" value="150" min="60" max="220"
+                            style="width: 100%; background: var(--bg-glass); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.6rem; color: var(--text-primary);">
+                    </div>
+
+                    <!-- Exercise Induced Angina -->
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">Exercise
+                            Angina (exang)</label>
+                        <select id="exang"
+                            style="width: 100%; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.6rem; color: var(--text-primary);">
+                            <option value="0" selected>No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <!-- ST Depression (Oldpeak) -->
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">ST
+                            Depression (Oldpeak)</label>
+                        <input type="number" step="0.1" id="oldpeak" value="1.2" min="0" max="6.5"
+                            style="width: 100%; background: var(--bg-glass); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.6rem; color: var(--text-primary);">
+                    </div>
+
+                    <!-- Major Vessels (ca) -->
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">Major
+                            Vessels Colored (ca 0-3)</label>
+                        <select id="ca"
+                            style="width: 100%; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.6rem; color: var(--text-primary);">
+                            <option value="0" selected>0 Vessels</option>
+                            <option value="1">1 Vessel</option>
+                            <option value="2">2 Vessels</option>
+                            <option value="3">3 Vessels</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; background: var(--gradient-btn); border: none; padding: 0.85rem; border-radius: var(--radius-md); color: rgb(247, 5, 5); font-weight: 700; cursor: pointer; font-size: 1rem;">
+                        Evaluate Risk Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Output Score Card -->
+        <div class="card"
+            style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.75rem;">
+            <h2
+                style="font-size: 1.25rem; font-family: var(--font-heading); color: var(--text-primary); margin-bottom: 1.25rem;">
+                Risk Assessment</h2>
+
+            <div style="text-align: center; padding: 1.5rem 0;">
+                <div
+                    style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">
+                    Composite Risk Score</div>
+                <div id="scoreDisplay"
+                    style="font-size: 3.5rem; font-family: var(--font-heading); font-weight: 800; color: var(--accent-amber); margin: 0.5rem 0;">
+                    3 / 12
+                </div>
+                <div id="riskLevelBadge"
+                    style="display: inline-block; padding: 0.35rem 1rem; border-radius: 9999px; font-weight: 700; font-size: 0.9rem; background: rgba(245, 158, 11, 0.2); color: var(--accent-amber);">
+                    Moderate Risk
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 1.25rem; margin-top: 1rem;">
+                <h4
+                    style="font-size: 0.9rem; font-family: var(--font-heading); color: var(--text-primary); margin-bottom: 0.75rem;">
+                    Factor Breakdown</h4>
+                <ul id="breakdownList"
+                    style="list-style: none; padding: 0; font-size: 0.8rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.5rem;">
+                    <li style="display: flex; justify-content: space-between;">
+                        <span>Age Risk Factor (>50):</span>
+                        <span id="f_age" style="font-weight: 600; color: var(--text-primary);">+1</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between;">
+                        <span>High BP (>140 mm Hg):</span>
+                        <span id="f_bp" style="font-weight: 600; color: var(--text-primary);">0</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between;">
+                        <span>High Cholesterol (>240):</span>
+                        <span id="f_chol" style="font-weight: 600; color: var(--text-primary);">+1</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between;">
+                        <span>Exercise Angina:</span>
+                        <span id="f_exang" style="font-weight: 600; color: var(--text-primary);">0</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between;">
+                        <span>ST Depression (>1.5):</span>
+                        <span id="f_oldpeak" style="font-weight: 600; color: var(--text-primary);">0</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between;">
+                        <span>Fluoroscopy Vessels (ca):</span>
+                        <span id="f_ca" style="font-weight: 600; color: var(--text-primary);">0</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div
+                style="margin-top: 1.5rem; background: var(--bg-glass); border-radius: var(--radius-sm); padding: 0.85rem; font-size: 0.75rem; color: var(--text-muted); line-height: 1.4;">
+                Scores: 0-2 (Low Risk), 3-5 (Moderate Risk), 6-8 (High Risk), 9+ (Very High Risk). Formula aligns with
+                pipeline clinical enrichment logic.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculateRisk() {
+        const age = parseInt(document.getElementById('age').value) || 0;
+        const trestbps = parseInt(document.getElementById('trestbps').value) || 0;
+        const chol = parseInt(document.getElementById('chol').value) || 0;
+        const fbs = parseInt(document.getElementById('fbs').value) || 0;
+        const exang = parseInt(document.getElementById('exang').value) || 0;
+        const oldpeak = parseFloat(document.getElementById('oldpeak').value) || 0;
+        const ca = parseInt(document.getElementById('ca').value) || 0;
+
+        let score = 0;
+        const s_age = age > 50 ? 1 : 0; score += s_age;
+        const s_bp = trestbps >= 140 ? 1 : 0; score += s_bp;
+        const s_chol = chol >= 240 ? 1 : 0; score += s_chol;
+        const s_fbs = fbs === 1 ? 1 : 0; score += s_fbs;
+        const s_exang = exang === 1 ? 2 : 0; score += s_exang;
+        const s_oldpeak = oldpeak >= 2.0 ? 2 : (oldpeak >= 1.0 ? 1 : 0); score += s_oldpeak;
+        const s_ca = ca; score += s_ca;
+
+        document.getElementById('scoreDisplay').innerText = score + ' / 12';
+        document.getElementById('f_age').innerText = '+' + s_age;
+        document.getElementById('f_bp').innerText = '+' + s_bp;
+        document.getElementById('f_chol').innerText = '+' + s_chol;
+        document.getElementById('f_exang').innerText = '+' + s_exang;
+        document.getElementById('f_oldpeak').innerText = '+' + s_oldpeak;
+        document.getElementById('f_ca').innerText = '+' + s_ca;
+
+        const badge = document.getElementById('riskLevelBadge');
+        if (score <= 2) {
+            badge.innerText = 'Low Risk';
+            badge.style.background = 'rgba(16, 185, 129, 0.2)';
+            badge.style.color = 'var(--accent-green)';
+            document.getElementById('scoreDisplay').style.color = 'var(--accent-green)';
+        } else if (score <= 5) {
+            badge.innerText = 'Moderate Risk';
+            badge.style.background = 'rgba(245, 158, 11, 0.2)';
+            badge.style.color = 'var(--accent-amber)';
+            document.getElementById('scoreDisplay').style.color = 'var(--accent-amber)';
+        } else if (score <= 8) {
+            badge.innerText = 'High Risk';
+            badge.style.background = 'rgba(239, 68, 68, 0.2)';
+            badge.style.color = 'var(--accent-red)';
+            document.getElementById('scoreDisplay').style.color = 'var(--accent-red)';
+        } else {
+            badge.innerText = 'Very High Risk';
+            badge.style.background = 'rgba(236, 72, 153, 0.2)';
+            badge.style.color = 'var(--accent-pink)';
+            document.getElementById('scoreDisplay').style.color = 'var(--accent-pink)';
+        }
+    }
+
+    // Initial calculation
+    calculateRisk();
+</script>
+{% endblock %}

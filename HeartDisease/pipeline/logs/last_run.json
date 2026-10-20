@@ -1,0 +1,556 @@
+{
+  "pipeline_version": "1.0.0",
+  "started_at": "2026-10-20T08:19:54.950744+00:00",
+  "status": "success",
+  "stages": {
+    "ingest": {
+      "stage": "ingest",
+      "source_path": "C:\\Users\\MOHAN VENKAT\\OneDrive\\Pictures\\Desktop\\my files\\PROJECTS\\HeartDisease\\data\\heart.csv",
+      "status": "success",
+      "issues": [],
+      "input_rows": 310,
+      "input_columns": 14,
+      "columns_found": [
+        "age",
+        "sex",
+        "cp",
+        "trestbps",
+        "chol",
+        "fbs",
+        "restecg",
+        "thalach",
+        "exang",
+        "oldpeak",
+        "slope",
+        "ca",
+        "thal",
+        "target"
+      ],
+      "raw_copy_path": "C:\\Users\\MOHAN VENKAT\\OneDrive\\Pictures\\Desktop\\my files\\PROJECTS\\HeartDisease\\data\\raw\\heart_raw.csv",
+      "duration_ms": 28.2
+    },
+    "validate": {
+      "stage": "validate",
+      "status": "success",
+      "total_rows": 310,
+      "total_columns": 14,
+      "missing_values": {},
+      "duplicate_rows": {
+        "count": 78,
+        "percentage": 25.16,
+        "row_indices": [
+          125,
+          136,
+          172,
+          181,
+          182,
+          183,
+          184,
+          185,
+          186,
+          187,
+          188,
+          189,
+          190,
+          191,
+          192,
+          193,
+          194,
+          195,
+          196,
+          197
+        ]
+      },
+      "invalid_categories": {
+        "ca": {
+          "count": 6,
+          "invalid_values_found": [
+            4
+          ],
+          "expected_values": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "row_indices": [
+            80,
+            87,
+            98,
+            161,
+            222,
+            305
+          ]
+        }
+      },
+      "implausible_values": {},
+      "summary": {
+        "total_missing_cells": 0,
+        "total_duplicate_rows": 78,
+        "total_invalid_categories": 6,
+        "total_implausible_values": 0,
+        "total_issues": 84,
+        "data_quality_score": 98.1
+      },
+      "duration_ms": 5.3
+    },
+    "transform": {
+      "stage": "transform",
+      "status": "success",
+      "input_rows": 310,
+      "issues": [],
+      "rows_dropped_nulls": 0,
+      "rows_dropped_duplicates": 78,
+      "dropped_dupe_indices": [
+        125,
+        136,
+        172,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        196,
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227
+      ],
+      "rows_after_cleaning": 232,
+      "columns_added": [
+        "sex_label",
+        "cp_label",
+        "fbs_label",
+        "restecg_label",
+        "exang_label",
+        "slope_label",
+        "thal_label",
+        "diagnosis",
+        "age_group",
+        "cholesterol_category",
+        "bp_category",
+        "hr_category",
+        "risk_score",
+        "risk_level"
+      ],
+      "output_rows": 232,
+      "output_columns": 28,
+      "duration_ms": 11.6
+    },
+    "export": {
+      "stage": "export",
+      "status": "success",
+      "output_rows": 232,
+      "output_columns": 28,
+      "files": [
+        {
+          "path": "C:\\Users\\MOHAN VENKAT\\OneDrive\\Pictures\\Desktop\\my files\\PROJECTS\\HeartDisease\\data\\cleaned\\heart_cleaned.csv",
+          "format": "csv",
+          "size_bytes": 41849,
+          "size_kb": 40.9
+        },
+        {
+          "path": "C:\\Users\\MOHAN VENKAT\\OneDrive\\Pictures\\Desktop\\my files\\PROJECTS\\HeartDisease\\data\\curated\\heart_curated.csv",
+          "format": "csv",
+          "size_bytes": 41849,
+          "size_kb": 40.9
+        },
+        {
+          "path": "C:\\Users\\MOHAN VENKAT\\OneDrive\\Pictures\\Desktop\\my files\\PROJECTS\\HeartDisease\\data\\curated\\heart_curated.parquet",
+          "format": "parquet",
+          "size_bytes": 19814,
+          "size_kb": 19.3
+        }
+      ],
+      "duration_ms": 21.2
+    },
+    "analytics": {
+      "stage": "sql_analytics",
+      "status": "success",
+      "source": "C:\\Users\\MOHAN VENKAT\\OneDrive\\Pictures\\Desktop\\my files\\PROJECTS\\HeartDisease\\data\\curated\\heart_curated.parquet",
+      "queries": [
+        {
+          "name": "overall_stats",
+          "description": "Overall dataset statistics",
+          "rows_returned": 1,
+          "time_ms": 5.378,
+          "columns": [
+            "total_patients",
+            "avg_age",
+            "min_age",
+            "max_age",
+            "avg_cholesterol",
+            "avg_blood_pressure",
+            "avg_max_heart_rate",
+            "disease_count",
+            "no_disease_count",
+            "disease_rate_pct"
+          ],
+          "data": [
+            {
+              "total_patients": 232,
+              "avg_age": 53.5,
+              "min_age": 29,
+              "max_age": 77,
+              "avg_cholesterol": 252.6,
+              "avg_blood_pressure": 131.2,
+              "avg_max_heart_rate": 150.9,
+              "disease_count": 113.0,
+              "no_disease_count": 119.0,
+              "disease_rate_pct": 48.7
+            }
+          ]
+        },
+        {
+          "name": "disease_by_gender",
+          "description": "Heart disease breakdown by gender",
+          "rows_returned": 2,
+          "time_ms": 10.526,
+          "columns": [
+            "gender",
+            "total",
+            "with_disease",
+            "without_disease",
+            "disease_rate_pct"
+          ],
+          "data": [
+            {
+              "gender": "Female",
+              "total": 65,
+              "with_disease": 36.0,
+              "without_disease": 29.0,
+              "disease_rate_pct": 55.4
+            },
+            {
+              "gender": "Male",
+              "total": 167,
+              "with_disease": 77.0,
+              "without_disease": 90.0,
+              "disease_rate_pct": 46.1
+            }
+          ]
+        },
+        {
+          "name": "stats_by_age_group",
+          "description": "Statistics by age group",
+          "rows_returned": 6,
+          "time_ms": 8.811,
+          "columns": [
+            "age_group",
+            "patient_count",
+            "avg_cholesterol",
+            "avg_bp",
+            "avg_max_hr",
+            "disease_rate_pct"
+          ],
+          "data": [
+            {
+              "age_group": "20-29",
+              "patient_count": 1,
+              "avg_cholesterol": 204.0,
+              "avg_bp": 130.0,
+              "avg_max_hr": 202.0,
+              "disease_rate_pct": 100.0
+            },
+            {
+              "age_group": "30-39",
+              "patient_count": 14,
+              "avg_cholesterol": 223.4,
+              "avg_bp": 123.0,
+              "avg_max_hr": 169.6,
+              "disease_rate_pct": 50.0
+            },
+            {
+              "age_group": "40-49",
+              "patient_count": 58,
+              "avg_cholesterol": 243.4,
+              "avg_bp": 124.8,
+              "avg_max_hr": 159.8,
+              "disease_rate_pct": 62.1
+            },
+            {
+              "age_group": "50-59",
+              "patient_count": 100,
+              "avg_cholesterol": 251.2,
+              "avg_bp": 133.6,
+              "avg_max_hr": 147.7,
+              "disease_rate_pct": 44.0
+            },
+            {
+              "age_group": "60-69",
+              "patient_count": 52,
+              "avg_cholesterol": 271.1,
+              "avg_bp": 134.7,
+              "avg_max_hr": 142.0,
+              "disease_rate_pct": 40.4
+            },
+            {
+              "age_group": "70+",
+              "patient_count": 7,
+              "avg_cholesterol": 276.3,
+              "avg_bp": 141.7,
+              "avg_max_hr": 144.9,
+              "disease_rate_pct": 57.1
+            }
+          ]
+        },
+        {
+          "name": "disease_by_chest_pain",
+          "description": "Disease prevalence by chest pain type",
+          "rows_returned": 4,
+          "time_ms": 9.153,
+          "columns": [
+            "chest_pain_type",
+            "total",
+            "with_disease",
+            "disease_rate_pct"
+          ],
+          "data": [
+            {
+              "chest_pain_type": "Non-anginal Pain",
+              "total": 73,
+              "with_disease": 50.0,
+              "disease_rate_pct": 68.5
+            },
+            {
+              "chest_pain_type": "Asymptomatic",
+              "total": 18,
+              "with_disease": 12.0,
+              "disease_rate_pct": 66.7
+            },
+            {
+              "chest_pain_type": "Atypical Angina",
+              "total": 31,
+              "with_disease": 20.0,
+              "disease_rate_pct": 64.5
+            },
+            {
+              "chest_pain_type": "Typical Angina",
+              "total": 110,
+              "with_disease": 31.0,
+              "disease_rate_pct": 28.2
+            }
+          ]
+        },
+        {
+          "name": "risk_level_distribution",
+          "description": "Patient distribution by risk level",
+          "rows_returned": 4,
+          "time_ms": 6.149,
+          "columns": [
+            "risk_level",
+            "patient_count",
+            "percentage"
+          ],
+          "data": [
+            {
+              "risk_level": "Low Risk",
+              "patient_count": 32,
+              "percentage": 13.8
+            },
+            {
+              "risk_level": "Moderate Risk",
+              "patient_count": 84,
+              "percentage": 36.2
+            },
+            {
+              "risk_level": "High Risk",
+              "patient_count": 71,
+              "percentage": 30.6
+            },
+            {
+              "risk_level": "Very High Risk",
+              "patient_count": 45,
+              "percentage": 19.4
+            }
+          ]
+        },
+        {
+          "name": "cholesterol_bp_crosstab",
+          "description": "Disease rate by cholesterol \u00d7 blood pressure category",
+          "rows_returned": 12,
+          "time_ms": 12.908,
+          "columns": [
+            "cholesterol_category",
+            "bp_category",
+            "patient_count",
+            "disease_rate_pct"
+          ],
+          "data": [
+            {
+              "cholesterol_category": "Borderline High",
+              "bp_category": "High Stage 1",
+              "patient_count": 13,
+              "disease_rate_pct": 76.9
+            },
+            {
+              "cholesterol_category": "Desirable",
+              "bp_category": "High Stage 2",
+              "patient_count": 10,
+              "disease_rate_pct": 70.0
+            },
+            {
+              "cholesterol_category": "Desirable",
+              "bp_category": "High Stage 1",
+              "patient_count": 7,
+              "disease_rate_pct": 57.1
+            },
+            {
+              "cholesterol_category": "High",
+              "bp_category": "Elevated",
+              "patient_count": 34,
+              "disease_rate_pct": 55.9
+            },
+            {
+              "cholesterol_category": "Desirable",
+              "bp_category": "Normal",
+              "patient_count": 9,
+              "disease_rate_pct": 55.6
+            },
+            {
+              "cholesterol_category": "Borderline High",
+              "bp_category": "High Stage 2",
+              "patient_count": 23,
+              "disease_rate_pct": 52.2
+            },
+            {
+              "cholesterol_category": "Borderline High",
+              "bp_category": "Normal",
+              "patient_count": 20,
+              "disease_rate_pct": 45.0
+            },
+            {
+              "cholesterol_category": "High",
+              "bp_category": "High Stage 1",
+              "patient_count": 34,
+              "disease_rate_pct": 44.1
+            },
+            {
+              "cholesterol_category": "Borderline High",
+              "bp_category": "Elevated",
+              "patient_count": 16,
+              "disease_rate_pct": 43.8
+            },
+            {
+              "cholesterol_category": "Desirable",
+              "bp_category": "Elevated",
+              "patient_count": 10,
+              "disease_rate_pct": 40.0
+            },
+            {
+              "cholesterol_category": "High",
+              "bp_category": "High Stage 2",
+              "patient_count": 40,
+              "disease_rate_pct": 37.5
+            },
+            {
+              "cholesterol_category": "High",
+              "bp_category": "Normal",
+              "patient_count": 16,
+              "disease_rate_pct": 37.5
+            }
+          ]
+        },
+        {
+          "name": "exercise_angina_impact",
+          "description": "Impact of exercise-induced angina",
+          "rows_returned": 2,
+          "time_ms": 8.331,
+          "columns": [
+            "exercise_angina",
+            "total",
+            "avg_max_hr",
+            "avg_st_depression",
+            "disease_rate_pct"
+          ],
+          "data": [
+            {
+              "exercise_angina": "Yes",
+              "total": 78,
+              "avg_max_hr": 141.2,
+              "avg_st_depression": 1.44,
+              "disease_rate_pct": 26.9
+            },
+            {
+              "exercise_angina": "No",
+              "total": 154,
+              "avg_max_hr": 155.8,
+              "avg_st_depression": 0.77,
+              "disease_rate_pct": 59.7
+            }
+          ]
+        },
+        {
+          "name": "high_risk_patients",
+          "description": "Profile of high-risk patients (high cholesterol + high BP)",
+          "rows_returned": 1,
+          "time_ms": 7.417,
+          "columns": [
+            "high_risk_count",
+            "avg_age",
+            "avg_chol",
+            "avg_bp",
+            "disease_rate_pct"
+          ],
+          "data": [
+            {
+              "high_risk_count": 40,
+              "avg_age": 57.2,
+              "avg_chol": 289.4,
+              "avg_bp": 153.4,
+              "disease_rate_pct": 37.5
+            }
+          ]
+        }
+      ],
+      "duration_ms": 156.1
+    }
+  },
+  "errors": [],
+  "finished_at": "2026-10-20T08:19:55.166296+00:00",
+  "total_duration_ms": 223.0,
+  "reconciliation": {
+    "input_rows": 310,
+    "rows_dropped_nulls": 0,
+    "rows_dropped_duplicates": 78,
+    "output_rows": 232,
+    "reconciles": true
+  }
+}
